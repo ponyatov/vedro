@@ -29,6 +29,9 @@ $(MODULE): $(CC) $(C) $(H) Makefile
 BINUTILS_VER	= 2.34
 GCC_VER			= 9.2.0
 GMP_VER			= 6.2.0
+MPFR_VER		= 4.0.2
+MPC_VER			= 1.0.2
+
 
 BINUTILS		= binutils-$(BINUTILS_VER)
 BINUTILS_GZ		= $(BINUTILS).tar.xz
@@ -67,21 +70,50 @@ $(GZ)/$(GCC_GZ):
 
 $(SRC)/%/README: $(GZ)/%.tar.xz
 	cd $(SRC) ; xzcat $< | tar -x && touch $@
+$(SRC)/%/README: $(GZ)/%.tar.gz
+	cd $(SRC) ;  zcat $< | tar -x && touch $@
 
 .PHONY: cclibs
 cclibs: gmp mpfr mpc
 
-GMP = gmp-$(GMP_VER)
+GMP		= gmp-$(GMP_VER)
+MPFR	= mpfr-$(MPFR_VER)
+MPC		= mpc-$(MPC_VER)
+
 GMP_GZ	= $(GMP).tar.xz
+MPFR_GZ	= $(MPFR).tar.xz
+MPC_GZ	= $(MPC).tar.gz
 
 CCLIBS_CFG	= --disable-shared --enable-static
 GMP_CFG 	= $(CCLIBS_CFG)
+MPFR_CFG 	= $(CCLIBS_CFG)
+MPC_CFG 	= $(CCLIBS_CFG) --with-mpfr=$(CWD)/$(TARGET)
 
 .PHONY: gmp
 gmp: $(TARGET)/lib/libgmp.a
 $(TARGET)/lib/libgmp.a: $(SRC)/$(GMP)/README
 	rm -rf $(TMP)/$(GMP) ; mkdir $(TMP)/$(GMP) ; cd $(TMP)/$(GMP) ;\
 	$(XPATH) $(SRC)/$(GMP)/$(CFG) $(GMP_CFG) && $(MAKE) -j4 && $(MAKE) install
-$(SRC)/$(GMP)/README: $(GZ)/$(GMP_GZ)
+
+.PHONY: mpfr
+mpfr: $(TARGET)/lib/libmpfr.a
+$(TARGET)/lib/libmpfr.a: $(SRC)/$(MPFR)/README
+	rm -rf $(TMP)/$(MPFR) ; mkdir $(TMP)/$(MPFR) ; cd $(TMP)/$(MPFR) ;\
+	$(XPATH) $(SRC)/$(MPFR)/$(CFG) $(MPFR_CFG) && $(MAKE) -j4 && $(MAKE) install
+
+.PHONY: mpc
+mpc: $(TARGET)/lib/libmpc.a
+$(TARGET)/lib/libmpc.a: $(SRC)/$(MPC)/README
+	rm -rf $(TMP)/$(MPC) ; mkdir $(TMP)/$(MPC) ; cd $(TMP)/$(MPC) ;\
+	$(XPATH) $(SRC)/$(MPC)/$(CFG) $(MPC_CFG) && $(MAKE) -j4 && $(MAKE) install
+
+$(SRC)/$(GMP)/README:  $(GZ)/$(GMP_GZ)
+$(SRC)/$(MPFR)/README: $(GZ)/$(MPFR_GZ)
+$(SRC)/$(MPC)/README:  $(GZ)/$(MPC_GZ)
+
 $(GZ)/$(GMP_GZ):
 	$(WGET) -O $@ https://gmplib.org/download/gmp/$(GMP_GZ)
+$(GZ)/$(MPFR_GZ):
+	$(WGET) -O $@ https://www.mpfr.org/mpfr-current/$(MPFR_GZ)
+$(GZ)/$(MPC_GZ):
+	$(WGET) -O $@ https://ftp.gnu.org/gnu/mpc/$(MPC_GZ)
