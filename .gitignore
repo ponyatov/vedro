@@ -6,3 +6,4 @@ vedro
 tmp/
 i486-elf/
 *.plist
+*.gch
