@@ -30,7 +30,7 @@ BINUTILS_VER	= 2.34
 GCC_VER			= 9.2.0
 GMP_VER			= 6.2.0
 MPFR_VER		= 4.0.2
-MPC_VER			= 1.0.2
+MPC_VER			= 1.1.0
 
 
 BINUTILS		= binutils-$(BINUTILS_VER)
