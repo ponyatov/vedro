@@ -14,17 +14,32 @@ WGET = wget -c --no-check-certificate
 
 .PHONY: all
 all: $(MODULE)
-	qemu-system-i386 -kernel $<
+	# qemu-system-i386 -kernel $<
 
-C = kernel/kernel.c
-H = kernel/kernel.h
+S	= kernel/boot.s
+C	= kernel/kernel.c
+H	= kernel/kernel.h
+LDS	= kernel/kernel.ld
 
 CC = $(TARGET)/bin/$(TARGET)-gcc
 LD = $(TARGET)/bin/$(TARGET)-ld
 SZ = $(TARGET)/bin/$(TARGET)-size
+OD = $(TARGET)/bin/$(TARGET)-objdump
 
-$(MODULE): $(CC) $(C) $(H) Makefile
-	$(CC) -o $@ $(C) && $(SZ) $@
+CFLAGS += -I$(CWD)/kernel
+
+OBJ += $(TMP)/boot.o $(TMP)/kernel.o
+
+$(MODULE): $(LDS) $(OBJ)
+	$(LD) -T$(LDS) -o $@ $(OBJ) && $(OD) -x $@
+
+INDENT	= clang-format-7 -i
+ANALIZ	= clang-7 --analyze -Weverything -pedantic -Wall -Werror
+
+$(TMP)/%.o: kernel/%.s
+	$(CC) $(CFLAGS) -c -o $@ $< && $(SZ) $@
+$(TMP)/%.o: kernel/%.c kernel/%.h
+	$(INDENT) $^ ; $(ANALIZ) $(CFLAGS) $^ && $(CC) $(CFLAGS) -c -o $@ $< && $(SZ) $@
 
 
 BINUTILS_VER	= 2.34
