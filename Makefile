@@ -16,14 +16,15 @@ WGET = wget -c --no-check-certificate
 all: $(MODULE)
 	qemu-system-i386 -kernel $<
 
-C = kernel/kernel.cc
-H = kernel/kernel.hh
+C = kernel/kernel.c
+H = kernel/kernel.h
 
 CC = $(TARGET)/bin/$(TARGET)-gcc
 LD = $(TARGET)/bin/$(TARGET)-ld
+SZ = $(TARGET)/bin/$(TARGET)-size
 
 $(MODULE): $(CC) $(C) $(H) Makefile
-	$(CC) -m32 -c -o $@ $(C) && file $@
+	$(CC) -o $@ $(C) && $(SZ) $@
 
 
 BINUTILS_VER	= 2.34
@@ -65,7 +66,9 @@ $(CC): $(LD)
 	mkdir -p $(TMP)/$(GCC) ; cd $(TMP)/$(GCC) ;\
 	$(XPATH) $(SRC)/$(GCC)/$(CFG) $(GCC0_CFG)
 	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) -j4 all-gcc
-	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) install-gcc
+	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) 	install-gcc
+	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) -j4 all-target-libgcc
+	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) 	install-target-libgcc
 
 $(SRC)/$(BINUTILS)/README	: $(GZ)/$(BINUTILS_GZ)
 $(SRC)/$(GCC)/README		: $(GZ)/$(GCC_GZ)
