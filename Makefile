@@ -90,10 +90,9 @@ MPFR_CFG 	= $(CCLIBS_CFG)
 MPC_CFG 	= $(CCLIBS_CFG) --with-mpfr=$(CWD)/$(TARGET)
 
 .PHONY: gmp
-gmp: $(TMP)/flag/gmp
-$(TMP)/flag/gmp: $(TARGET)/lib/libgmp.a
-	touch $@
-$(TARGET)/lib/libgmp.a: $(SRC)/$(GMP)/README
+gmp: $(TARGET)/lib/libgmp.a
+$(TARGET)/lib/libgmp.a:
+	$(MAKE) $(SRC)/$(GMP)/README
 	rm -rf $(TMP)/$(GMP) ; mkdir $(TMP)/$(GMP) ; cd $(TMP)/$(GMP) ;\
 	$(XPATH) $(SRC)/$(GMP)/$(CFG) $(GMP_CFG) && $(MAKE) -j4 && $(MAKE) install
 	rm -rf $(TMP)/$(GMP) $(SRC)/$(GMP)
