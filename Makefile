@@ -1,4 +1,4 @@
-TARGET = i486-elf
+TARGET 	= i486-elf
 
 CWD    	= $(CURDIR)
 MODULE	= $(notdir $(CWD))
@@ -15,11 +15,11 @@ WGET = wget -c --no-check-certificate
 .PHONY: all
 all: $(MODULE)
 	$(OD) -x $<
-	# qemu-system-i386 -serial stdio -kernel $<
+	qemu-system-i386 -debugcon stdio -kernel $<
 
 S	= kernel/boot.s
 C	= kernel/kernel.c
-H	= kernel/kernel.h kernel/boot.h
+H	= kernel/kernel.h kernel/boot.h kernel/stdint.h
 LDS	= kernel/kernel.ld
 
 CC = $(TARGET)/bin/$(TARGET)-gcc
@@ -33,10 +33,12 @@ CFLAGS += -I$(CWD)/kernel
 OBJ += $(TMP)/boot.o $(TMP)/kernel.o
 
 $(MODULE): $(LDS) $(OBJ)
-	$(LD) -T$(LDS) -o $@ $(OBJ)  && $(SZ) $@
+	$(LD) -T$(LDS) -o $@ $(OBJ) && $(SZ) $@
 
 INDENT	= clang-format-7 -i
-ANALIZ	= clang-7 --analyze -Weverything -pedantic -Wall -Werror
+ANALIZ	= clang-7 --analyze -Weverything -pedantic -Wall -Werror \
+			-Wno-language-extension-token
+#			-Wno-gnu-include-next -Wno-reserved-id-macro
 
 $(TMP)/%.o: kernel/%.s
 	$(AS) $(CFLAGS) -c -o $@ $< && $(SZ) $@

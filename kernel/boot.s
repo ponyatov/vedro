@@ -14,12 +14,12 @@
 
 .section .text
 .global _start
-.global _init
 _start:
     mov     $stack, %esp
     push    %ebx
     push    %eax
 
+    call    init
 
     /* Test device exit */
     outl    %eax, $0xf4
@@ -28,7 +28,7 @@ _start:
     hlt
     jmp .
 
-.section bss
+.section .bss
 .space 0x200
 stack:
 
