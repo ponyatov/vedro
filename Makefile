@@ -90,22 +90,27 @@ MPFR_CFG 	= $(CCLIBS_CFG)
 MPC_CFG 	= $(CCLIBS_CFG) --with-mpfr=$(CWD)/$(TARGET)
 
 .PHONY: gmp
-gmp: $(TARGET)/lib/libgmp.a
+gmp: $(TMP)/flag/gmp
+$(TMP)/flag/gmp: $(TARGET)/lib/libgmp.a
+	touch $@
 $(TARGET)/lib/libgmp.a: $(SRC)/$(GMP)/README
 	rm -rf $(TMP)/$(GMP) ; mkdir $(TMP)/$(GMP) ; cd $(TMP)/$(GMP) ;\
 	$(XPATH) $(SRC)/$(GMP)/$(CFG) $(GMP_CFG) && $(MAKE) -j4 && $(MAKE) install
+	rm -rf $(TMP)/$(GMP) $(SRC)/$(GMP)
 
 .PHONY: mpfr
 mpfr: $(TARGET)/lib/libmpfr.a
 $(TARGET)/lib/libmpfr.a: $(SRC)/$(MPFR)/README
 	rm -rf $(TMP)/$(MPFR) ; mkdir $(TMP)/$(MPFR) ; cd $(TMP)/$(MPFR) ;\
 	$(XPATH) $(SRC)/$(MPFR)/$(CFG) $(MPFR_CFG) && $(MAKE) -j4 && $(MAKE) install
+	rm -rf $(TMP)/$(MPFR) $(SRC)/$(MPFR)
 
 .PHONY: mpc
 mpc: $(TARGET)/lib/libmpc.a
 $(TARGET)/lib/libmpc.a: $(SRC)/$(MPC)/README
 	rm -rf $(TMP)/$(MPC) ; mkdir $(TMP)/$(MPC) ; cd $(TMP)/$(MPC) ;\
 	$(XPATH) $(SRC)/$(MPC)/$(CFG) $(MPC_CFG) && $(MAKE) -j4 && $(MAKE) install
+	rm -rf $(TMP)/$(MPC) $(SRC)/$(MPC)
 
 $(SRC)/$(GMP)/README:  $(GZ)/$(GMP_GZ)
 $(SRC)/$(MPFR)/README: $(GZ)/$(MPFR_GZ)
