@@ -5,6 +5,11 @@
 
 github: https://bitbucket.org/ponyatov/vedro/
 
+### OS Dev
+
+* https://wiki.osdev.org
+* http://www.fysnet.net/osdesign_book_series.htm
+
 ### Boot
 
 * https://wiki.osdev.org/Multiboot
