@@ -5,9 +5,19 @@
             "command": "multiCommand.build",
             "sequence": [
                 "workbench.action.files.saveAll",
-                {"command": "workbench.action.terminal.sendSequence","args": {"text": "\u000Dclear ; make\u000D"}}
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "\u000Dclear ; make\u000D"
+                    }
+                }
             ],
         },
     ],
+    "files.watcherExclude": {
+        "**/i486-elf/**": true,
+        "**/tmp/**": true,
+    },
     "editor.tabSize": 4,
+    "git.ignoreLimitWarning": true,
 }
