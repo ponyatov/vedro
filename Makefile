@@ -44,21 +44,28 @@ CFG = configure --disable-nls --prefix=$(CWD)/$(TARGET)
 XPATH = PATH=$(CWD)/$(TARGET)/bin:$(PATH)
 
 BINUTILS_CFG = --target=$(TARGET) --with-sysroot=$(TARGET)/sysroot
-GCC_CFG		 = $(BINUTILS_CFG) --enable-languages="c"
+GCC0_CFG	 = $(BINUTILS_CFG) --enable-languages="c" \
+				--with-gmp=$(CWD)/$(TARGET) --with-mpfr=$(CWD)/$(TARGET) --with-mpc=$(CWD)/$(TARGET) \
+				--with-newlib --without-headers
 
 .PHONY: binutils
-binutils: $(LD) $(CC)
-.PHONY: gcc
-gcc: cclibs $(CC)
+binutils: $(LD)
+.PHONY: gcc0
+gcc0: cclibs $(CC)
 
-$(LD): $(SRC)/$(BINUTILS)/README
-	rm -rf $(TMP)/$(BINUTILS) ; mkdir $(TMP)/$(BINUTILS) ; cd $(TMP)/$(BINUTILS) ;\
-	$(XPATH) $(SRC)/$(BINUTILS)/$(CFG) $(BINUTILS_CFG) && $(MAKE) -j4 && $(MAKE) install
-	touch $@
+$(LD):
+	$(MAKE) $(SRC)/$(BINUTILS)/README
+	mkdir -p $(TMP)/$(BINUTILS) ; cd $(TMP)/$(BINUTILS) ;\
+	$(XPATH) $(SRC)/$(BINUTILS)/$(CFG) $(BINUTILS_CFG)
+	cd $(TMP)/$(BINUTILS) ; $(MAKE) -j4 && $(MAKE) install
+	rm -rf $(TMP)/$(BINUTILS) $(SRC)/$(BINUTILS)
 
-$(CC): $(LD) $(SRC)/$(GCC)/README
-	rm -rf $(TMP)/$(GCC) ; mkdir $(TMP)/$(GCC) ; cd $(TMP)/$(GCC) ;\
-	$(XPATH) $(SRC)/$(GCC)/$(CFG) $(GCC_CFG)
+$(CC): $(LD)
+	$(MAKE) $(SRC)/$(GCC)/README
+	mkdir -p $(TMP)/$(GCC) ; cd $(TMP)/$(GCC) ;\
+	$(XPATH) $(SRC)/$(GCC)/$(CFG) $(GCC0_CFG)
+	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) -j4 all-gcc
+	cd $(TMP)/$(GCC) ; $(XPATH) $(MAKE) install-gcc
 
 $(SRC)/$(BINUTILS)/README	: $(GZ)/$(BINUTILS_GZ)
 $(SRC)/$(GCC)/README		: $(GZ)/$(GCC_GZ)
@@ -93,21 +100,23 @@ MPC_CFG 	= $(CCLIBS_CFG) --with-mpfr=$(CWD)/$(TARGET)
 gmp: $(TARGET)/lib/libgmp.a
 $(TARGET)/lib/libgmp.a:
 	$(MAKE) $(SRC)/$(GMP)/README
-	rm -rf $(TMP)/$(GMP) ; mkdir $(TMP)/$(GMP) ; cd $(TMP)/$(GMP) ;\
+	mkdir -p $(TMP)/$(GMP) ; cd $(TMP)/$(GMP) ;\
 	$(XPATH) $(SRC)/$(GMP)/$(CFG) $(GMP_CFG) && $(MAKE) -j4 && $(MAKE) install
 	rm -rf $(TMP)/$(GMP) $(SRC)/$(GMP)
 
 .PHONY: mpfr
 mpfr: $(TARGET)/lib/libmpfr.a
-$(TARGET)/lib/libmpfr.a: $(SRC)/$(MPFR)/README
-	rm -rf $(TMP)/$(MPFR) ; mkdir $(TMP)/$(MPFR) ; cd $(TMP)/$(MPFR) ;\
+$(TARGET)/lib/libmpfr.a:
+	$(MAKE) $(SRC)/$(MPFR)/README
+	mkdir -p $(TMP)/$(MPFR) ; cd $(TMP)/$(MPFR) ;\
 	$(XPATH) $(SRC)/$(MPFR)/$(CFG) $(MPFR_CFG) && $(MAKE) -j4 && $(MAKE) install
 	rm -rf $(TMP)/$(MPFR) $(SRC)/$(MPFR)
 
 .PHONY: mpc
 mpc: $(TARGET)/lib/libmpc.a
-$(TARGET)/lib/libmpc.a: $(SRC)/$(MPC)/README
-	rm -rf $(TMP)/$(MPC) ; mkdir $(TMP)/$(MPC) ; cd $(TMP)/$(MPC) ;\
+$(TARGET)/lib/libmpc.a:
+	$(MAKE) $(SRC)/$(MPC)/README
+	mkdir -p $(TMP)/$(MPC) ; cd $(TMP)/$(MPC) ;\
 	$(XPATH) $(SRC)/$(MPC)/$(CFG) $(MPC_CFG) && $(MAKE) -j4 && $(MAKE) install
 	rm -rf $(TMP)/$(MPC) $(SRC)/$(MPC)
 
