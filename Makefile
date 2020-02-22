@@ -16,8 +16,8 @@ WGET = wget -c --no-check-certificate
 all: $(MODULE)
 	qemu-system-i386 -kernel $<
 
-C = kernel.cc
-H = kernel.hh
+C = kernel/kernel.cc
+H = kernel/kernel.hh
 
 CC = $(TARGET)/bin/gcc
 LD = $(TARGET)/bin/ld
@@ -32,11 +32,18 @@ BINUTILS_GZ		= $(BINUTILS).tar.xz
 
 $(CC): $(LD)
 
-$(LD):
-	$(MAKE) binutils
+CFG = configure --disable-nls --prefix=$(CWD)/$(TARGET)
+
+XPATH = PATH=$(CWD)/$(TARGET)/bin:$(PATH)
+
+BINUTILS_CFG = --target=$(TARGET) --with-sysroot=$(TARGET)/sysroot
 
 .PHONY: binutils
-binutils: $(SRC)/$(BINUTILS)/README
+binutils: $(LD)
+
+$(LD): $(SRC)/$(BINUTILS)/README
+	rm -rf $(TMP)/$(BINUTILS) ; mkdir $(TMP)/$(BINUTILS) ; cd $(TMP)/$(BINUTILS) ;\
+	$(XPATH) $(SRC)/$(BINUTILS)/$(CFG) $(BINUTILS_CFG) && $(MAKE) -j4 && $(MAKE) install
 
 $(SRC)/$(BINUTILS)/README: $(GZ)/$(BINUTILS_GZ)
 
