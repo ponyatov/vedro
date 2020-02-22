@@ -1,0 +1,13 @@
+{
+    // configure recommendation: bind F12 key on this command for handy projects rebuild
+    "multiCommand.commands": [
+        {
+            "command": "multiCommand.build",
+            "sequence": [
+                "workbench.action.files.saveAll",
+                {"command": "workbench.action.terminal.sendSequence","args": {"text": "\u000Dclear ; make\u000D"}}
+            ],
+        },
+    ],
+    "editor.tabSize": 4,
+}
