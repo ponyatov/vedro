@@ -75,10 +75,6 @@ $(GZ)/$(BINUTILS_GZ):
 $(GZ)/$(GCC_GZ):
 	$(WGET) -O $@ http://mirror.linux-ia64.org/gnu/gcc/releases/$(GCC)/$(GCC_GZ)
 
-$(SRC)/%/README: $(GZ)/%.tar.xz
-	cd $(SRC) ; xzcat $< | tar -x && touch $@
-$(SRC)/%/README: $(GZ)/%.tar.gz
-	cd $(SRC) ;  zcat $< | tar -x && touch $@
 
 .PHONY: cclibs
 cclibs: gmp mpfr mpc
@@ -130,3 +126,9 @@ $(GZ)/$(MPFR_GZ):
 	$(WGET) -O $@ https://www.mpfr.org/mpfr-current/$(MPFR_GZ)
 $(GZ)/$(MPC_GZ):
 	$(WGET) -O $@ https://ftp.gnu.org/gnu/mpc/$(MPC_GZ)
+
+
+$(SRC)/%/README: $(GZ)/%.tar.xz
+	cd $(SRC) ; xzcat $< | tar -x && touch $@
+$(SRC)/%/README: $(GZ)/%.tar.gz
+	cd $(SRC) ;  zcat $< | tar -x && touch $@
