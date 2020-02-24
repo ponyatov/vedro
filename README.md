@@ -16,6 +16,12 @@ github: https://bitbucket.org/ponyatov/vedro/
 * https://wiki.osdev.org/Multiboot
 * https://github.com/qemu/qemu/tree/master/tests/multiboot
 
+### PCI
+
+* https://wiki.osdev.org/PCI
+* http://gitlab.unique-conception.org/snippets/53
+
+
 ### Phantom OS
 
 * https://www.youtube.com/watch?v=OXZiw9n_V5I

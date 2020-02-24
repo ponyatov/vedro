@@ -18,8 +18,8 @@ all: $(MODULE)
 	qemu-system-i386 -debugcon stdio -kernel $<
 
 S	= kernel/boot.s
-C	= kernel/kernel.c
-H	= kernel/kernel.h kernel/boot.h kernel/stdint.h
+C	= kernel/kernel.c kernel/pci.c
+H	= kernel/kernel.h kernel/stdint.h kernel/boot.h kernel/pci.h
 LDS	= kernel/kernel.ld
 
 CC = $(TARGET)/bin/$(TARGET)-gcc
@@ -30,7 +30,7 @@ OD = $(TARGET)/bin/$(TARGET)-objdump
 
 CFLAGS += -I$(CWD)/kernel
 
-OBJ += $(TMP)/boot.o $(TMP)/kernel.o
+OBJ += $(TMP)/boot.o $(TMP)/kernel.o $(TMP)/pci.o
 
 $(MODULE): $(LDS) $(OBJ)
 	$(LD) -T$(LDS) -o $@ $(OBJ) && $(SZ) $@
