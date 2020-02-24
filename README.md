@@ -12,6 +12,7 @@ github: https://bitbucket.org/ponyatov/vedro/
 
 ### Boot
 
+* https://www.gnu.org/software/grub/manual/multiboot/multiboot.html
 * https://wiki.osdev.org/Multiboot
 * https://github.com/qemu/qemu/tree/master/tests/multiboot
 
