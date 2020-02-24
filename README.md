@@ -25,3 +25,8 @@ github: https://bitbucket.org/ponyatov/vedro/
 ### Phantom OS
 
 * https://www.youtube.com/watch?v=OXZiw9n_V5I
+
+### Others
+
+* http://www.osdever.net/bkerndev/Docs/title.htm
+* https://github.com/szhou42/osdev
