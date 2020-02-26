@@ -30,3 +30,4 @@ github: https://bitbucket.org/ponyatov/vedro/
 
 * http://www.osdever.net/bkerndev/Docs/title.htm
 * https://github.com/szhou42/osdev
+* https://littleosbook.github.io/
